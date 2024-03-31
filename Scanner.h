@@ -3,15 +3,16 @@
 #pragma once
 
 #include "FileMap.h"
+#include "Flex.h"
 #include <iostream>
 
 class Scanner {
+  Flex *flex;
+
 public:
   Scanner(FileMap *file) {
-    if (file) { // Always good to check for nullptr
-      for (const char *p = file->Begin(); p != file->End(); ++p) {
-        std::cout << *p;
-      }
+    for (const char *p = file->Begin(); p != file->End(); ++p) {
+      flex->accept(p);
     }
   }
 
