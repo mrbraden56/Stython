@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "FileMap.cpp"
-/* g++ main.cpp FileMap.cpp -o com */
+#include "FileMap.h"
+#include "Scanner.h"
+
 int main() {
   const char *stython_program_path = "example_program.sy";
   FileMap file(stython_program_path);
@@ -12,10 +13,8 @@ int main() {
     return 1;
   }
 
-  /*   Scanner scanner(file.Begin(), file.End()); */
-  for (const char *p = file.Begin(); p != file.End(); ++p) {
-    std::cout << *p; // Print each character
-  }
+  // std::cout << *(file.Begin() + 1) << "\n";
+  Scanner scanner(&file);
 
   return 0;
 }

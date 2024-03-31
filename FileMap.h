@@ -1,3 +1,6 @@
+// FileMap.h
+#pragma once
+
 #include <cstddef>    // For size_t
 #include <cstring>    // For strerror
 #include <fcntl.h>    // For open, O_RDONLY
@@ -6,7 +9,7 @@
 #include <unistd.h>   // For close
 
 class FileMap {
-  char const *m_begin = nullptr;
+  char *m_begin = nullptr;
   char const *m_end = nullptr;
 
 public:
