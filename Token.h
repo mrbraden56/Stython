@@ -1,9 +1,16 @@
+#include <string>
 
 #pragma once
 
+using namespace ::std;
+
 class Token {
 public:
-  virtual ~Token() {}
+  Token(int *pos, int kindIn);
+  virtual std::string toString();
+  size_t pos() const;
+  string kind() const; // Defines the type of token such as a BOOL, IDENTIFIER,
+                       // INTLITERAL, etc
 };
 
 class KeywordToken : public Token {};
