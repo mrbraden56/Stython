@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 
-#include "FileMap.h"
 #include "Scanner.h"
 
 using namespace std;

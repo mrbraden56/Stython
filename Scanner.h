@@ -38,13 +38,13 @@ private:
 
   char advance() { return source_code[current++]; }
 
-  addToken(TokenType token) {}
+  /* addToken(TokenType token) {} */
 
   void scanToken() {
     char c = advance();
     switch (c) {
     case '(':
-      addToken();
+      /* addToken(); */
     }
   }
 };
