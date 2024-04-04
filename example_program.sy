@@ -8,5 +8,5 @@ def main(){
 	int x = 5;
 	string name = "Braden";
 	int result = add(x, 5);
-	print(f"The result is: {result}")
+	print(f"The result is: {result}");
 }
