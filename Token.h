@@ -1,57 +1,61 @@
+
 #include "TokenKind.h"
+#include <iostream>
 #include <string>
 
 #pragma once
 
-using namespace ::std;
+using namespace std;
 
 class Token {
 public:
-  Token(int start, int end, TokenKind kindIn)
-      : start(start), end(end), kind(kindIn) {}
-  // virtual ~Token() = default;
+  Token(TokenKind kindIn, string value) : kind(kindIn), value(value) {}
+  virtual ~Token() = default;
 
-  int start; // Starting position of the token
-  int end;   // Ending position of the token
+  virtual void printToken() const { cout << value << "\n"; }
+
   TokenKind kind;
+  string value;
 };
 
 class KeywordToken : public Token {
 public:
-  KeywordToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  KeywordToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
+
+  void printToken() const override { cout << value << "\n"; }
 };
 
 class IdentifierToken : public Token {
 public:
-  IdentifierToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  IdentifierToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
+
+  void printToken() const override { cout << value << "\n"; }
 };
 
 class SpecialSymbolToken : public Token {
 public:
-  SpecialSymbolToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  SpecialSymbolToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
+
+  void printToken() const override { cout << value << "\n"; }
 };
 
 class OperatorToken : public Token {
 public:
-  OperatorToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  OperatorToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
+
+  void printToken() const override { cout << value << "\n"; }
 };
 
 class StringLiteralToken : public Token {
 public:
-  string value; // Member to store the string value
+  StringLiteralToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
 
-  StringLiteralToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  void printToken() const override { cout << value << "\n"; }
 };
 
 class NumberLiteralToken : public Token {
 public:
-  string value; // Member to store the string value
+  NumberLiteralToken(TokenKind kindIn, string value) : Token(kindIn, value) {}
 
-  NumberLiteralToken(int start, int end, TokenKind kindIn)
-      : Token(start, end, kindIn) {}
+  void printToken() const override { cout << value << "\n"; }
 };

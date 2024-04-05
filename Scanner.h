@@ -19,6 +19,10 @@ public:
     while (!atEnd()) {
       scanToken();
     }
+    for (Token &token : Tokens) {
+
+      // token.printToken();
+    }
   }
 
   ~Scanner() {}
@@ -41,7 +45,11 @@ private:
 
   bool atEnd() { return current >= source_code.length(); }
 
-  char advance() { return source_code[current++]; }
+  char advance() {
+    char c = source_code[current];
+    current++;
+    return c;
+  }
 
   void addToken(TokenKind token) {}
 
@@ -69,9 +77,10 @@ private:
       advance();
     }
     // NOTE: Now start is at the begening " and current is at the end "
-    string val = source_code.substr(start, current - 1);
+    string val = source_code.substr(start, current);
 
-    Tokens.push_back(StringLiteralToken(start, current - 1, TokenKind::STRING));
+    Tokens.push_back(StringLiteralToken(
+        TokenKind::STRING, source_code.substr(start, (current)-start + 1)));
   }
 
   void numberLiteral() {
@@ -81,9 +90,10 @@ private:
       advance();
     }
 
-    string val = source_code.substr(start, current - 1);
+    string val = source_code.substr(start, current);
 
-    Tokens.push_back(NumberLiteralToken(start, current - 1, TokenKind::NUMBER));
+    Tokens.push_back(NumberLiteralToken(
+        TokenKind::NUMBER, source_code.substr(start, (current)-start + 1)));
   }
 
   void identifier() {
@@ -92,14 +102,15 @@ private:
       advance();
     }
 
-    if (reservedWords.find(source_code.substr(start, current - 1)) !=
+    if (reservedWords.find(source_code.substr(start, current)) !=
         reservedWords.end()) {
       Tokens.push_back(
-          KeywordToken(start, current - 1,
-                       reservedWords[source_code.substr(start, current - 1)]));
+          KeywordToken(reservedWords[source_code.substr(start, current)],
+                       source_code.substr(start, (current)-start + 1)));
     } else {
       Tokens.push_back(
-          IdentifierToken(start, current - 1, TokenKind::IDENTIFIER));
+          IdentifierToken(TokenKind::IDENTIFIER,
+                          source_code.substr(start, (current)-start + 1)));
     }
   }
 
@@ -107,80 +118,95 @@ private:
     char c = advance();
     switch (c) {
     case '(':
-      Tokens.push_back(
-          SpecialSymbolToken(current, current, TokenKind::LEFT_PAREN));
+      Tokens.push_back(SpecialSymbolToken(TokenKind::LEFT_PAREN,
+                                          source_code.substr(current, 1)));
       break;
     case ')':
-      Tokens.push_back(
-          SpecialSymbolToken(current, current, TokenKind::RIGHT_PAREN));
+      Tokens.push_back(SpecialSymbolToken(TokenKind::RIGHT_PAREN,
+                                          source_code.substr(current, 1)));
       break;
     case '{':
-      Tokens.push_back(
-          SpecialSymbolToken(current, current, TokenKind::LEFT_BRACE));
+      Tokens.push_back(SpecialSymbolToken(TokenKind::LEFT_BRACE,
+                                          source_code.substr(current, 1)));
       break;
     case '}':
-      Tokens.push_back(
-          SpecialSymbolToken(current, current, TokenKind::RIGHT_BRACE));
+      Tokens.push_back(SpecialSymbolToken(TokenKind::RIGHT_BRACE,
+                                          source_code.substr(current, 1)));
       break;
     case ',':
-      Tokens.push_back(SpecialSymbolToken(current, current, TokenKind::COMMA));
+      Tokens.push_back(
+          SpecialSymbolToken(TokenKind::COMMA, source_code.substr(current, 1)));
       break;
     case ';':
-      Tokens.push_back(
-          SpecialSymbolToken(current, current, TokenKind::SEMICOLON));
+      Tokens.push_back(SpecialSymbolToken(TokenKind::SEMICOLON,
+                                          source_code.substr(current, 1)));
       break;
     case '-':
-      Tokens.push_back(OperatorToken(current, current, TokenKind::MINUS));
+      cout << c << "\n";
+      Tokens.push_back(
+          lookOneAhead('>')
+              ? OperatorToken(TokenKind::RETURN_SYMBOL,
+                              source_code.substr(start, (current)-start + 1))
+              : OperatorToken(TokenKind::MINUS,
+                              source_code.substr(current, 1)));
       break;
     case '+':
-      Tokens.push_back(OperatorToken(current, current, TokenKind::PLUS));
+      Tokens.push_back(
+          OperatorToken(TokenKind::PLUS, source_code.substr(current, 1)));
       break;
     case '/':
-      Tokens.push_back(OperatorToken(current, current, TokenKind::SLASH));
+      Tokens.push_back(
+          OperatorToken(TokenKind::SLASH, source_code.substr(current, 1)));
       break;
     case '*':
-      Tokens.push_back(OperatorToken(current, current, TokenKind::STAR));
+      Tokens.push_back(
+          OperatorToken(TokenKind::STAR, source_code.substr(current, 1)));
       break;
     case '<':
       Tokens.push_back(
           lookOneAhead('=')
-              ? OperatorToken(current, current, TokenKind::LESS_EQUAL)
-              : OperatorToken(current, current, TokenKind::LESS));
+              ? OperatorToken(TokenKind::LESS_EQUAL,
+                              source_code.substr(current, 1))
+              : OperatorToken(TokenKind::LESS, source_code.substr(current, 1)));
       break;
     case '>':
-      Tokens.push_back(
-          lookOneAhead('=')
-              ? OperatorToken(current, current, TokenKind::GREATER_EQUAL)
-              : OperatorToken(current, current, TokenKind::GREATER));
+      Tokens.push_back(lookOneAhead('=')
+                           ? OperatorToken(TokenKind::GREATER_EQUAL,
+                                           source_code.substr(current, 1))
+                           : OperatorToken(TokenKind::GREATER,
+                                           source_code.substr(current, 1)));
       break;
     case '=':
-      Tokens.push_back(
-          lookOneAhead('=')
-              ? OperatorToken(current, current, TokenKind::EQUAL_EQUAL)
-              : OperatorToken(current, current, TokenKind::EQUAL));
+      Tokens.push_back(lookOneAhead('=')
+                           ? OperatorToken(TokenKind::EQUAL_EQUAL,
+                                           source_code.substr(current, 1))
+                           : OperatorToken(TokenKind::EQUAL,
+                                           source_code.substr(current, 1)));
       break;
     case '!':
       Tokens.push_back(
           lookOneAhead('=')
-              ? OperatorToken(current, current, TokenKind::BANG_EQUAL)
-              : OperatorToken(current, current, TokenKind::BANG));
+              ? OperatorToken(TokenKind::BANG_EQUAL,
+                              source_code.substr(current, 1))
+              : OperatorToken(TokenKind::BANG, source_code.substr(current, 1)));
       break;
     case ' ':
+      // Handling for space character, presumably skipping it.
       break;
 
     // NOTE: String Literals
     case '"':
-      stringLiteral();
+      stringLiteral(); // Implementation presumably handles literals
+      break;
     default:
-
       // NOTE: Number Literals
       if (isdigit(static_cast<unsigned char>(c))) {
-        numberLiteral();
+        numberLiteral(); // Implementation presumably handles number literals
       }
 
       // NOTE: Reserved words and identifiers
       if (isalpha(static_cast<unsigned char>(c))) {
-        identifier();
+        identifier(); // Implementation presumably handles identifiers
       }
     }
   }
